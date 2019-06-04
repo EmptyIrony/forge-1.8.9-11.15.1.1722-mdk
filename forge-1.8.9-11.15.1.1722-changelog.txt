@@ -4935,7 +4935,7 @@ Build 1.6.2-9.10.0.785:
 		
 		Updated FML:
 		MinecraftForge/FML@7af5c21d74679d1a53550f9719bba22b2f28dd13 @InstanceFactory was set to look for Fields instead of methods
-		MinecraftForge/FML@bc9d1fe657c7a0953adc7d4c5ed81c575bdfb0f1 Merge pull request #254 from CaptainShadows/patch-1
+		MinecraftForge/FML@bc9d1fe657c7a0953adc7d4c5ed81c575bdfb0f1 Merge pull request #254 from Captainrainbows/patch-1
 
 Build 1.6.2-9.10.0.784:
 	LexManos: MinecraftForge/FML@c913258ca38e662264bdf4aafbfbef86881c9290 Disable signature check of client for now, it's broken.
@@ -8672,7 +8672,7 @@ Build 3.0.0.70:
 	LexManos: Changed IGuiHandler's signature to be compatible with both sides. Took out ModLoaderMp reference in README.
 
 Build 2.0.0.68:
-	LexManos: Fix some shadowing warnings.
+	LexManos: Fix some rainbowing warnings.
 	LexManos: Some cleanups to update_patches, should run properly on any system now.
 	LexManos: Add IChunkLoadHandler.canEntityUpdate() function to allow entities to update while in custom loaded chunks.
 	LexManos: Implemented a chat event handler system to allow for manipulating and handeling the various chat/command events.

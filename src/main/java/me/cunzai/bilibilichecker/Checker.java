@@ -14,56 +14,56 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Checker {
+public class Checker implements Runnable{
+    public static int fans;
+    public static ReentrantLock lockGetFans = new ReentrantLock();
+
+
     public static int getUid(){
-        ConfigLoader.load();
         return ConfigLoader.uid;
     }
 
-    public static int getFans(){
+    @Override
+    public void run(){
+        refresh();
+    }
 
+    public static void refresh(){
         URL url = null;
         try {
             url = new URL("https://api.bilibili.com/x/relation/stat?vmid=" + getUid() );
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        URLConnection urlConnection = null;
-        try {
-            urlConnection = url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        InputStream inputStream = null;
-        try {
-            inputStream = urlConnection.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuffer bs = new StringBuffer();
-        String l = null;
-        while (true) {
-            try {
+            URLConnection urlConnection = url.openConnection();
+            InputStream  inputStream = urlConnection.getInputStream();
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuffer bs = new StringBuffer();
+            String l;
+            while (true) {
                 if (!((l = buffer.readLine()) != null)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
+                bs.append(l);
             }
-            bs.append(l);
-        }
-         String resp =  bs.toString();
-        JsonParser parser = new JsonParser();
-        JsonObject json =(JsonObject) parser.parse(resp);
-        if (json.get("code").getAsInt()==0){
-            return json.get("data").getAsJsonObject().get("follower").getAsInt();
-        }else {
-            return 0;
-        }
+            String resp =  bs.toString();
+            lockGetFans.lock();
+            JsonParser parser = new JsonParser();
+            JsonObject json = (JsonObject) parser.parse(resp);
+            if (json.get("code").getAsInt() == 0) {
+                BiliBiliChecker.logger.info(json);
+                fans = json.get("data").getAsJsonObject().get("follower").getAsInt();
+            } else {
+                fans = -1;
+            }
+        }catch (Exception e){
+            fans = -1;
+            e.printStackTrace();
 
+        }finally {
+            lockGetFans.unlock();
+        }
 
     }
-
 
 
 
